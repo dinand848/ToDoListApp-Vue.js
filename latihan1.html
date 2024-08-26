@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>To Do List</title>
+</head>
+
+<body>
+
+    <div id="app" class="container min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="w-100">
+            <h1 class="text-center text-primary mb-5">To Do List App</h1>
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-8">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-3">
+                            <input type="text" v-model="startTime" class="form-control" placeholder="Start Time">
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <input type="text" v-model="endTime" class="form-control" placeholder="End Time">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <input type="text" v-model="newActivity" class="form-control" placeholder="New Activity">
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <button class="btn btn-primary w-100" @click="addItem">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center mt-5">
+                <div class="col-12 col-md-10 col-lg-8">
+                    <ul class="list-group">
+                        <li v-for="(item, index) in todolist" :key="index" class="list-group-item p-3 d-flex align-items-center justify-content-between" :class="{'list-group-item-success': item.done === 'True'}">
+                            <div>
+                                <span class="fw-bold">{{ item.start }} - {{ item.end }}</span> : {{ item.text }}
+                            </div>
+                            <div>
+                                <button class="btn btn-success me-2" @click="markDone(index)" :disabled="item.done === 'True'">Done</button>
+                                <button class="btn btn-outline-danger" @click="deleteItem(index)">Delete</button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createApp, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+        createApp({
+            setup() {
+                const todolist = ref([
+                    { text: 'belajar html', start: '07:00', end: '08:00', done: 'False' },
+                    { text: 'belajar css', start: '08:15', end: '09:15', done: 'False' },
+                    { text: 'belajar js', start: '09:30', end: '10:30', done: 'False' }
+                ])
+
+                const startTime = ref('')
+                const endTime = ref('')
+                const newActivity = ref('')
+
+                const addItem = () => {
+                    if (startTime.value && endTime.value && newActivity.value) {
+                        todolist.value.push({
+                            text: newActivity.value,
+                            start: startTime.value,
+                            end: endTime.value,
+                            done: 'False'
+                        })
+
+                        // Clear input fields
+                        startTime.value = ''
+                        endTime.value = ''
+                        newActivity.value = ''
+                    }
+                }
+
+                const deleteItem = (index) => {
+                    todolist.value.splice(index, 1)
+                }
+
+                const markDone = (index) => {
+                    todolist.value[index].done = 'True'
+                }
+
+                return {
+                    todolist,
+                    startTime,
+                    endTime,
+                    newActivity,
+                    addItem,
+                    deleteItem,
+                    markDone
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
